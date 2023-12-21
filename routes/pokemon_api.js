@@ -39,7 +39,7 @@ router.get('/', async (req,res,next)=>{
         //Read data from db.json then parse to JSobject
         let db = fs.readFileSync("db.json", "utf-8");
         db = JSON.parse(db);
-        const pokemons = db.data;
+        let {data} = db;
         //Filter data by title
         let result = [];
 
@@ -47,15 +47,17 @@ router.get('/', async (req,res,next)=>{
         filterKeys.forEach((condition) => {
             result = result.length
             ? result.filter((pokemon) => pokemon[condition].includes(filterQuery[condition]))
-            : pokemons.filter((pokemon) => pokemon[condition].includes(filterQuery[condition]));
+            : data.filter((pokemon) => pokemon[condition].includes(filterQuery[condition]));
         });
-        } else {
-        result = pokemons;
+        data = result;
+        }
+        else{
+        data = data;
         }
         //then select number of result by offset
-        result = result.slice(offset, offset + limit);
+        data = data.slice(offset, offset + limit);
         //send response
-        res.status(200).send(result)
+        res.status(200).send({data})
     } catch (error) {
         next(error);
     }

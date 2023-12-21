@@ -61,7 +61,7 @@ router.get('/', async (req,res,next)=>{
     }
 })
 
-router.get('/pokemons/:id',(req,res,next)=>{
+router.get('/api/pokemons/:id',(req,res,next)=>{
     try {
         const {id}=req.params;
         const pokemonId = parseInt(id)

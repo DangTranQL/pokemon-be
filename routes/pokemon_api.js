@@ -57,7 +57,7 @@ router.get('/', async (req,res,next)=>{
         //then select number of result by offset
         data = data.slice(offset, offset + limit);
         //send response
-        res.status(200).send({data})
+        res.status(200).send({data, totalPokemons: 721})
     } catch (error) {
         next(error);
     }
@@ -92,7 +92,7 @@ router.get('/:id',(req,res,next)=>{
                 prev_pokemon=pokemons.find(pokemon=>pokemon.id===pokemonId-1)
                 next_pokemon=pokemons.find(pokemon=>pokemon.id===pokemonId+1)
             }
-            res.status(200).send({pokemon, prev_pokemon, next_pokemon})
+            res.status(200).send({pokemon, previousPokemon: prev_pokemon, nextPokemon: next_pokemon})
         }
     } catch (error) {
         next(error);
@@ -118,12 +118,12 @@ router.post('/',(req,res,next)=>{
     //Read data from db.json then parse to JSobject
     let db = fs.readFileSync("db.json", "utf-8");
     db = JSON.parse(db);
-    const pokemons = db.data;
+    let {data} = db;
 
     //Add new book to book JS object
-    pokemons.push(newPokemon)
+    data.push(newPokemon)
     //Add new book to db JS object
-    db.data=pokemons
+    db.data=data
     //db JSobject to JSON string
     db= JSON.stringify(db)
     //write and save to db.json

@@ -13,8 +13,8 @@ const pokemonTypes = [
 //getting all pokemons, search by type, name
 router.get('/', (req,res,next)=>{
     const allowedFilter = [
-        "types",
-        "name",
+        "type",
+        "search",
         "page",
         "limit",
     ];
@@ -45,9 +45,17 @@ router.get('/', (req,res,next)=>{
 
         if (filterKeys.length) {
         filterKeys.forEach((condition) => {
-            result = result.length
-            ? result.filter((pokemon) => pokemon[condition].includes(filterQuery[condition]))
-            : data.filter((pokemon) => pokemon[condition].includes(filterQuery[condition]));
+            if (condition === "type") {
+                const key = "types";
+                result = result.length
+                ? result.filter((pokemon) => pokemon[key].includes(filterQuery[condition]))
+                : data.filter((pokemon) => pokemon[key].includes(filterQuery[condition]));
+            }
+            else if (condition === "search") {
+                result = result.length
+                ? result.filter((pokemon) => pokemon.name.toLowerCase().includes(filterQuery.search.toLowerCase()))
+                : data.filter((pokemon) => pokemon.name.toLowerCase().includes(filterQuery.search.toLowerCase()));
+            }
         });
         data = result;
         }

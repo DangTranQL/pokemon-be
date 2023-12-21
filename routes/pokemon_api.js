@@ -65,7 +65,7 @@ router.get('/', (req,res,next)=>{
         //then select number of result by offset
         data = data.slice(offset, offset + limit);
         //send response
-        res.status(200).send({count: data.length, data, totalPokemons: 721})
+        res.status(200).send({count: data.length, data, totalPokemons: db.data.length})
     } catch (error) {
         next(error);
     }
@@ -110,28 +110,33 @@ router.get('/:id',(req,res,next)=>{
 router.post('/',(req,res,next)=>{
     //post input validation
     try{
-        const { name, types, url } = req.body;
+        const { name, types, url } = req.query;
+        const [type1, type2] = types.replace(/[\[\]]/g, '').split(',');
     if(!name || !types || !url){
         const exception = new Error(`Missing body info`);
         exception.statusCode = 401;
         throw exception;
     }
-    else if (pokemonTypes.includes(types)){
+    else if (!pokemonTypes.includes(type1) || !pokemonTypes.includes(type2)){
         const exception = new Error(`Invalid types`);
         exception.statusCode = 401;
         throw exception;
     }
-    //post processing
-    const newPokemon = {name, types, url, pages: parseInt(pages) || 1, id: crypto.randomBytes(4).toString("hex")};
     //Read data from db.json then parse to JSobject
     let db = fs.readFileSync("db.json", "utf-8");
     db = JSON.parse(db);
     let {data} = db;
 
+    const array = [type1,type2];
+
+    //post processing
+    const newPokemon = {id: data.length+1, name, types: array, url};
+
     //Add new book to book JS object
     data.push(newPokemon)
     //Add new book to db JS object
     db.data=data
+    db.totalPokemons = data.length;
     //db JSobject to JSON string
     db= JSON.stringify(db)
     //write and save to db.json

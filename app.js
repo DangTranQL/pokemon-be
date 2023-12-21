@@ -8,8 +8,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-// var indexRouter = require('./routes/index');
-var pokemonRouter = require('./routes/pokemon_api');
+var indexRouter = require('./routes/index');
+// var pokemonRouter = require('./routes/pokemon_api');
 
 var app = express();
 
@@ -21,8 +21,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 
-// app.use('/', indexRouter);
-app.use('/', pokemonRouter);
+app.use('/', indexRouter);
+// app.use('/pokemons', pokemonRouter);
 
 app.use((req,res,next)=>{
     const exception = new Error(`Path not found`);

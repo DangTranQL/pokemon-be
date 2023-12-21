@@ -11,7 +11,7 @@ const pokemonTypes = [
 ]
 
 //getting all pokemons, search by type, name
-router.get('/', async (req,res,next)=>{
+router.get('/', (req,res,next)=>{
     const allowedFilter = [
         "types",
         "name",
@@ -57,7 +57,7 @@ router.get('/', async (req,res,next)=>{
         //then select number of result by offset
         data = data.slice(offset, offset + limit);
         //send response
-        res.status(200).send({data, totalPokemons: 721})
+        res.status(200).send({count: data.length, data, totalPokemons: 721})
     } catch (error) {
         next(error);
     }
